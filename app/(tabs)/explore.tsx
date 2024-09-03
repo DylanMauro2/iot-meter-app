@@ -1,90 +1,108 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { StyleSheet, Image, Platform } from 'react-native';
+import { StyleSheet, View, Text, SafeAreaView, TextInput,  Dimensions, StatusBar } from 'react-native';
 
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '@/context/AuthContext';
+import { useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
+import { setStatusBarBackgroundColor, setStatusBarStyle } from 'expo-status-bar';
+import CustomInputText from '@/components/CustomInputText';
+import CustomButton from '@/components/CustomButton';
 
 export default function TabTwoScreen() {
+  const router = useRouter()
+
+  const {user} = useContext(AuthContext)
+
+  const [nombre, setNombre] = useState("")
+  const [email, setEmail] = useState("")
+  const [editando, setEditando] = useState(false)
+
+  console.log(user)
+
+  const handleEditarPerfil = async () => {
+    const payload = {
+      nombre: nombre,
+      email: email 
+    }
+
+    const res = await fetch(`http://localhost:3000/usuarios/${user.usuarioId}`, {
+      method:"PUT",
+      
+    })
+  }
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Explore</ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Custom fonts">
-        <ThemedText>
-          Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
-          <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-            custom fonts such as this one.
-          </ThemedText>
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user's current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText> library
-          to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
+    <View style={{width:Dimensions.get("window").width, backgroundColor:"#cecece", alignSelf:"center", flex:1}}>
+      <View style={{flex:.73}}>
+        <LinearGradient 
+          colors={['#8BC34A', '#4CAF50', '#388E3C']}
+          style={{backgroundColor:"#fee", height: Dimensions.get("window").height, flex:1}}
+        >
+        <View style={styles.avatar}>
+          <Text style={{fontSize:60, fontWeight:"600"}}>{user.nombre.split(" ")[0][0].toUpperCase()}</Text>
+        </View>
+        <View style={{alignSelf:"center"}}>
+        <Text style={{ color:"#FFFFFF", fontSize:30, fontWeight:"600", marginTop:10}}>
+          {user.nombre.toUpperCase()}
+        </Text>
+      </View>
+      <View style={{flexDirection:"row", marginTop:20}}>
+          <View style={{flex:0.33, alignItems:"center", flexDirection:"column", gap:4}}>
+            <Text style={{fontSize: 20, color: "#FEFEFE", fontWeight:"700"}}>2</Text>
+            <Text style={{textAlign:"center", fontSize: 16, color: "#F5F5F5", fontWeight:"500"}}>Dispositivos Registrados</Text>
+          </View>
+          <View style={{flex:0.34, alignItems:"center", flexDirection:"column", gap:4}}>
+          <Text style={{fontSize: 20, color: "#FEFEFE", fontWeight:"700"}}>1</Text>
+          <Text style={{textAlign:"center", fontSize: 16, color: "#F5F5F5", fontWeight:"500"}}>Dispositivos Activos</Text>
+          </View>
+          <View style={{flex:0.33, alignItems:"center", flexDirection:"column", gap:4}}>
+          <Text style={{fontSize: 20, color: "#FEFEFE", fontWeight:"700"}}>10</Text>
+          <Text style={{textAlign:"center", fontSize: 16, color: "#F5F5F5", fontWeight:"500"}}>Dispositivos Conectados</Text>
+          </View>
+        </View>
+        </LinearGradient>
+      </View>
+      
+      <View style={{flex:1, padding: 10, alignContent:"center", backgroundColor:"#CECECE"}}>
+        <View style={{paddingLeft:25}}>
+          <Text style={{fontWeight:"600", fontSize:17}}>Nombre:</Text>
+        </View>
+        <View style={{alignItems:"center"}}>
+          <CustomInputText
+            placeholder="Nombre"
+            value={editando ? (nombre) : (user.nombre)}
+            onChangeText={(e) => { setNombre(e)}}
+            editable={editando}
+          />
+        </View>
+        <View style={{paddingLeft:25}}>
+          <Text style={{fontWeight:"600", fontSize:17}}>Email:</Text>
+        </View>
+        <View style={{alignItems:"center"}}>
+          <CustomInputText
+            placeholder="email"
+            value={editando ? (email) : (user.email)}
+            onChangeText={(e) => setEmail(e)}
+            editable={editando}
+          />
+        </View>
+        
+      
+        {editando ? (
+          <CustomButton title="Guardar" onPress={()=> {setEditando(false)}} />
+        ): (
+          <CustomButton title="Editar" onPress={()=> {setEditando(true)}}/>
+        )}
+
+
+      </View>
+    </View>
   );
 }
 
@@ -99,4 +117,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
   },
+  profileCard: {
+    flexDirection: 'row',
+    marginBottom:20,
+    backgroundColor:"#fefefe"  
+  },
+  profileInfo: {
+    padding:0,
+  },
+  avatar: {
+    width: 100,
+    height:100,
+    backgroundColor:"#8BC34A",
+    fontSize: 120,
+    borderRadius: "50%",
+    marginTop:80,
+    justifyContent:"center",
+    alignItems:"center",
+    alignSelf:"center",
+    borderWidth: 2,
+  }
 });

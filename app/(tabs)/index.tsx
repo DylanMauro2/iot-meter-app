@@ -1,70 +1,43 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { Image, StyleSheet, Platform, SafeAreaView, Dimensions, View, TextInput, Pressable, Button, TouchableOpacity, Text, StatusBar } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { useRouter } from 'expo-router';
+import { Ionicons, Feather } from '@expo/vector-icons';
+import { useContext, useEffect } from 'react';
+import { AuthContext } from '@/context/AuthContext';
+import { LinearGradient } from 'expo-linear-gradient';
+import CustomLinkButton from '@/components/CustomLinkButton';
 
 export default function HomeScreen() {
+  const {isAuthenticated, user} = useContext(AuthContext)
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <View style={{width:Dimensions.get("window").width, alignSelf:"center", flex:1}}>
+      <LinearGradient
+        colors={["#8BC34A", "#4CAF50", "#388E3C"]}
+        style={{
+          flex:1
+        }}
+      >
+        <View style={{alignItems:"center", justifyContent:"center", marginVertical:30}}>
+          <Text style={{fontSize:50, fontWeight:"bold", paddingTop:100, color:"#FEFEFE"}}>Manargy</Text>
+          <Text style={{fontSize:30, color:"#FEFEFE"}}>Bienvenido!</Text>
+        </View>
+        <View style={{flex:1}}>
+          <CustomLinkButton url="/consumo" title="Historial de consumo">
+            <Ionicons name="calendar" size={32} color="green"/>
+          </CustomLinkButton>
+          <CustomLinkButton url="/consumo/tiempo-real" title="Consumo en tiempo real">
+            <Ionicons name="bar-chart" size={32} color="green"/>
+          </CustomLinkButton>
+          <CustomLinkButton url="gestion-dispositivos" title="Gestionar Dispositivos">
+            <Feather name="tool" size={32} color="green"/>
+          </CustomLinkButton>
+        </View>
+      </LinearGradient>
+  </View>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
