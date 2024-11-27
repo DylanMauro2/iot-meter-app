@@ -9,11 +9,15 @@ import CustomLinkButton from "@/components/CustomLinkButton";
 import { Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
 import { useToast } from "react-native-toast-notifications";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function onLogin() {
   const [email, setEmail] = useState("");
   const [contrasena, setContrasena] = useState("");
   const { onLogin, isAuthenticated } = useContext(AuthContext);
+  const insets = useSafeAreaInsets();
+
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL
 
   const toast = useToast()
 
@@ -31,7 +35,7 @@ export default function onLogin() {
     };
 
     try {
-      const res = await fetch("http://localhost:3000/auth/login", {
+      const res = await fetch(`${apiUrl}/auth/login`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -73,15 +77,15 @@ export default function onLogin() {
         colors={["#8BC34A", "#4CAF50", "#388E3C"]}
         style={{
           backgroundColor: "#fee",
-          height: Dimensions.get("window").height,
-          flex: 1,
+          minHeight: Dimensions.get("screen").height,
+          paddingTop: insets.top
         }}
       >
         <View
           style={{
             alignItems: "center",
             justifyContent:"center",
-            marginTop: 200,
+            marginTop: 30,
             shadowColor: "#000",
             shadowOffset: {
               width: 0,
@@ -96,7 +100,7 @@ export default function onLogin() {
             colors={["#C5E1A5", "#558B2F"]}
             style={{
               backgroundColor: "#fee",
-              borderRadius:"15%",
+              borderRadius:20,
               padding:20
             }}
           >
@@ -105,6 +109,8 @@ export default function onLogin() {
           </Text>
           <CustomInputText
             value={email}
+            keyboardType="email-address"
+            textContentType="emailAddress"
             onChangeText={(e) => setEmail(e)}
             placeholder="Email"
             autoCorrect={false}

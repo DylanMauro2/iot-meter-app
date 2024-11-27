@@ -1,36 +1,34 @@
-export type saveElectrodomesticoRequest = {
+import { Electrodomestico } from "@/types"
+
+export type SaveElectrodomesticoRequest = {
   nombre: string,
   usuarioId: number,
   amperajeNominal: number,
   potenciaNominal: number
 }
 
-export type editElectrodomesticoByIdRequest = {
-  nombre?: string,
-  usuarioId?: number,
-  amperajeNominal?: number,
-  potenciaNominal?: number,
-  updatedAt?: Date,
-  umbralPotenciaMin?: number,
-  umbralPotenciaMax?: number,
-  umbralAmperajeMax?: number,
-  umbralAmperajeMin?: number,
+export type UpdateElectrodomesticoRequest = {
+  id: number,
+  electrodomestico: Electrodomestico
 }
 
-export type getElectrodomesticosByUsuarioIdRequest = {
+export type GetElectrodomesticosByUsuarioIdRequest = {
   usuarioId: number,
 }
 
-export type getElectrodomesticoByElectrodomesticoIdRequest = {
+export type GetElectrodomesticoByElectrodomesticoIdRequest = {
   electrodomesticoId: number,
 }
 
+const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+console.log(apiUrl)
+
 export const getElectrodomesticosByUsuarioId  = async (usuarioId) => {
-  const payload: getElectrodomesticosByUsuarioIdRequest = {
+  const payload: GetElectrodomesticosByUsuarioIdRequest = {
     usuarioId: usuarioId
   }
 
-  const res = await fetch(`http://localhost:3000/electrodomesticos/usuario/${usuarioId}`, {
+  const res = await fetch(`${apiUrl}/electrodomesticos/usuario/${usuarioId}`, {
     method: "POST",
     headers: {
       "Content-Type":"application/json"
@@ -45,7 +43,7 @@ export const getElectrodomesticosByUsuarioId  = async (usuarioId) => {
 
 export const getElectrodomesticoByElectrodomesticoId  = async (electrodomesticoId: number) => {
 
-  const res = await fetch(`http://localhost:3000/electrodomesticos/${electrodomesticoId}`, {
+  const res = await fetch(`${apiUrl}/electrodomesticos/${electrodomesticoId}`, {
     method: "GET",
     headers: {
       "Content-Type":"application/json"
@@ -58,9 +56,9 @@ export const getElectrodomesticoByElectrodomesticoId  = async (electrodomesticoI
   return electrodomestico;
 }
 
-export const saveElectrodomestico = async (payload: saveElectrodomesticoRequest) => {
+export const saveElectrodomestico = async (payload: SaveElectrodomesticoRequest) => {
 
-  const res = await fetch(`http://localhost:3000/electrodomesticos/crear`, {
+  const res = await fetch(`${apiUrl}/electrodomesticos/crear`, {
     method: "POST",
     headers: {
       "Content-Type":"application/json"
@@ -75,11 +73,26 @@ export const saveElectrodomestico = async (payload: saveElectrodomesticoRequest)
 
 export const deleteElectrodomesticoById = async (electrodomesticoId: number) => {
 
-  const res = await fetch(`http://localhost:3000/electrodomesticos/${electrodomesticoId}`, {
+  const res = await fetch(`${apiUrl}/electrodomesticos/${electrodomesticoId}`, {
     method: "DELETE",
     headers: {
       "Content-Type":"application/json"
     }
+  })
+  
+  const electrodomesticosEliminado = await res.json()
+
+  return electrodomesticosEliminado;
+}
+
+export const updateElectrodomestico = async (payload: UpdateElectrodomesticoRequest) => {
+
+  const res = await fetch(`${apiUrl}/electrodomesticos/${payload.id}/editar`, {
+    method: "PUT",
+    headers: {
+      "Content-Type":"application/json"
+    },
+    body: JSON.stringify(payload.electrodomestico)
   })
   
   const electrodomesticosEliminado = await res.json()

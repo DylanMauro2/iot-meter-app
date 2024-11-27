@@ -5,11 +5,14 @@ import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { AuthContext } from '@/context/AuthContext';
+import { Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const {isAuthenticated} = useContext(AuthContext)
   const rootNavigationState = useRootNavigationState();
+  const insets = useSafeAreaInsets();
 
   if (!rootNavigationState?.key) return null;
 
@@ -24,8 +27,10 @@ export default function TabLayout() {
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
         tabBarStyle: {
-          height: 110,
-          paddingTop: 10
+          height: 70,
+          paddingBottom: Platform.OS === 'android' ? 0 : 10,
+          marginBottom: insets.bottom,
+          backgroundColor: "#fff" // Ajuste específico para Android
         },
         tabBarIconStyle: {
           width:40

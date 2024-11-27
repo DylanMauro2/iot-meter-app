@@ -1,4 +1,4 @@
-import { View, Text, TextInput, SafeAreaView, Dimensions } from "react-native";
+import { View, Text, TextInput, Dimensions } from "react-native";
 import React, { useState } from "react";
 import { useRouter } from "expo-router";
 import CustomButton from "@/components/CustomButton";
@@ -6,12 +6,14 @@ import CustomInputText from "@/components/CustomInputText";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomLinkButton from "@/components/CustomLinkButton";
 import { Ionicons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function register() {
   const [usuario, setUsuario] = useState("")
   const [email, setEmail] = useState("")
   const [contraseña, setContraseña] = useState("")
   const [contraseñaRepetida, setContraseñaRepetida] = useState("")
+  const insets = useSafeAreaInsets();
   const router = useRouter()
 
   const widthScreenSize = Dimensions.get("window").width;
@@ -28,14 +30,14 @@ export default function register() {
         style={{
           backgroundColor: "#fee",
           height: Dimensions.get("window").height,
-          flex: 1,
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom
         }}
       >
         <View
           style={{
             alignItems: "center",
             justifyContent:"center",
-            marginTop: 150,
             shadowColor: "#000",
             shadowOffset: {
               width: 0,
@@ -44,13 +46,14 @@ export default function register() {
             shadowOpacity: 0.25,
             shadowRadius: 3.84,
             elevation: 5,
+            marginTop:30
           }}
         >
           <LinearGradient
             colors={["#C5E1A5", "#558B2F"]}
             style={{
               backgroundColor: "#fee",
-              borderRadius:"15%",
+              borderRadius:20,
               padding:20
             }}
           >

@@ -18,7 +18,7 @@ export default function CardButton({title, ...restOfProps} : {title:string}) {
           alignSelf:"center",
           justifyContent:"center",
           alignItems:"center",
-          borderRadius:"50%",
+          borderRadius:100,
           width: Dimensions.get("window").width * 0.4,
         }}
       >

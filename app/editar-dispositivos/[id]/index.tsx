@@ -1,77 +1,175 @@
-import { View, Text, Dimensions } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { View, Text, Dimensions, ActivityIndicator, ScrollView } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { LinearGradient } from 'expo-linear-gradient'
 import CustomInputText from '@/components/CustomInputText'
 import CustomButton from '@/components/CustomButton'
-import { getElectrodomesticoByElectrodomesticoId } from '@/services/electrodomesticoServices'
+import { getElectrodomesticoByElectrodomesticoId, updateElectrodomestico, UpdateElectrodomesticoRequest } from '@/services/electrodomesticoServices'
+import { Electrodomestico } from '@/types'
+import { ElectrodomesticosContext } from '@/context/ElectrodomesticosContext'
+import { Toast } from 'react-native-toast-notifications'
 
 
 export default function EditarDispositivosScreen() {
-  const [nombre, setNombre] = useState("")
-  const [descripcion, setDescripcion] = useState("")
-  const [amperajeNominal, setAmperajeNominal] = useState(0)
-  const [potenciaNominal, setPotenciaNominal] = useState(0)
+  const [loading, setLoading] = useState(false);
+  const [electrodomestico, setElectrodomestico] = useState<Electrodomestico>();
+
+  const { obtenerElectrodomesticos } = useContext(ElectrodomesticosContext);
+
   const router = useRouter()
 
   const { id } = useLocalSearchParams()
 
   const obtenerElectrodomesticoByElectrodomesticoId = async () => {
+    setLoading(true);
     const electrodomestico = await getElectrodomesticoByElectrodomesticoId(Number(id))
-    setNombre(electrodomestico.nombre)
-    setAmperajeNominal(electrodomestico.amperaje_nominal)
-    setPotenciaNominal(electrodomestico.potencia_nominal)
-    setDescripcion(electrodomestico.descripcion)
+    setElectrodomestico(electrodomestico);
+    setLoading(false);
   }
+
+  const editarElectrodometico = async () => {
+    const payload: UpdateElectrodomesticoRequest = {
+      id: Number(electrodomestico?.id), 
+      electrodomestico: {
+        ...(electrodomestico?.nombre && {nombre: electrodomestico.nombre}),
+        ...(electrodomestico?.amperajeNominal && {amperajeNominal: electrodomestico.amperajeNominal}),
+        ...(electrodomestico?.potenciaNominal && {potenciaNominal: electrodomestico.potenciaNominal}),
+        ...(electrodomestico?.marca && { marca: electrodomestico.marca }),
+        ...(electrodomestico?.modelo && { modelo: electrodomestico.modelo }),
+        ...(electrodomestico?.umbralAmperajeMax && { umbralAmperajeMax: electrodomestico.umbralAmperajeMax }),
+        ...(electrodomestico?.umbralAmperajeMin && { umbralAmperajeMin: electrodomestico.umbralAmperajeMin }),
+        ...(electrodomestico?.umbralPotenciaMin && { umbralPotenciaMin: electrodomestico.umbralPotenciaMin }),
+        ...(electrodomestico?.umbralPotenciaMax && { umbralPotenciaMax: electrodomestico.umbralPotenciaMax }),
+        ...(electrodomestico?.descripcion && { descripcion: electrodomestico.descripcion }),
+      }
+    }
+
+    const res = await updateElectrodomestico(payload);
+
+    Toast.show(res.message);
+
+    router.back();
+
+    await obtenerElectrodomesticos();
+
+  } 
 
   useEffect(()=>{
     obtenerElectrodomesticoByElectrodomesticoId();
   },[])
+
+  useEffect(()=>{
+    console.log(electrodomestico)
+  },[electrodomestico])
+
+  const handleChangeInput = (field, value) => {
+    setElectrodomestico((prevValue) => ({
+      ...prevValue,
+      [field]: value
+    }))
+  }
+
   return (
-    <View style={{minHeight:Dimensions.get("window").height}}>
+    <ScrollView style={{position: "relative"}}>
       <LinearGradient
         colors={["#8BC34A", "#4CAF50", "#388E3C"]}
         style={{
-          minHeight: Dimensions.get("window").height,
           padding: 20,
-          alignItems:"center"
+          alignItems:"center",
         }}
       >
         <LinearGradient
-            colors={["#C5E1A5", "#558B2F"]}
+            colors={["#008f39", "#8BC34A", "#558B2F"]}
             style={{
               backgroundColor: "#fee",
-              borderRadius:"15%",
-              padding:20
+              height:"auto",
+              borderRadius:20,
+              padding:20,
+              marginBottom:20
             }}
           >
-        <CustomInputText
-          placeholder="Nombre"
-          value={nombre}
-          onChangeText={(e) => setNombre(e)}
-        />
-        <CustomInputText
-          placeholder="Amperaje Nominal"
-          value={amperajeNominal}
-          onChangeText={(e) => setAmperajeNominal(e)}
-        />
-        <CustomInputText
-          placeholder="Potencia Nominal"
-          value={potenciaNominal}
-          onChangeText={(e) => setPotenciaNominal(e)}
-          
-        />
-        <CustomInputText
-          placeholder="Descripción"
-          value={descripcion}
-          onChangeText={(e) => setDescripcion(e)}
-          
-        />
-        <CustomButton title="Actualizar información"/>
-
+        {loading ? (
+          <View style={{flex:1}}>
+            <ActivityIndicator/>
+          </View>
+        ) : (
+          <View style={{flex: 1}}>
+            <Text style={{ fontSize: 23, color: "#000", marginLeft:10, marginBottom: -5}}>
+              Nombre
+            </Text>
+            <CustomInputText
+              value={electrodomestico?.nombre}
+              onChangeText={(e) => handleChangeInput("nombre", e)}
+            />
+            <Text style={{ fontSize: 23, color: "#000", marginLeft:10, marginBottom: -5}}>
+              Amperaje Nominal
+            </Text>
+            <CustomInputText
+              value={electrodomestico?.amperajeNominal}
+              onChangeText={(e) => handleChangeInput("amperajeNominal", e)}
+            />
+            <Text style={{ fontSize: 23, color: "#000", marginLeft:10, marginBottom: -5}}>
+              Potencia Nominal
+            </Text>
+            <CustomInputText
+              value={electrodomestico?.potenciaNominal}
+              onChangeText={(e) => handleChangeInput("potenciaNominal", e)}          
+            />
+            <Text style={{ fontSize: 23, color: "#000", marginLeft:10, marginBottom: -5}}>
+              Descripción
+            </Text>
+            <CustomInputText
+              value={electrodomestico?.descripcion}
+              onChangeText={(e) => handleChangeInput("descripcion", e)}          
+            />
+            <Text style={{ fontSize: 23, color: "#000", marginLeft:10, marginBottom: -5}}>
+              Marca
+            </Text>
+            <CustomInputText
+              value={electrodomestico?.marca}
+              onChangeText={(e) => handleChangeInput("marca", e)}        
+            />
+            <Text style={{ fontSize: 23, color: "#000", marginLeft:10, marginBottom: -5}}>
+              Modelo
+            </Text>
+            <CustomInputText
+              value={electrodomestico?.modelo}
+              onChangeText={(e) => handleChangeInput("modelo", e)}        
+            />
+            <Text style={{ fontSize: 23, color: "#000", marginLeft:10, marginBottom: -5}}>
+              Umbral Amperaje Mínimo
+            </Text>
+            <CustomInputText
+              value={electrodomestico?.umbralAmperajeMin}
+              onChangeText={(e) => handleChangeInput("umbralAmperajeMin", e)}        
+            />
+            <Text style={{ fontSize: 23, color: "#000", marginLeft:10, marginBottom: -5}}>
+              Umbral Amperaje Maximo
+            </Text>
+            <CustomInputText
+              value={electrodomestico?.umbralAmperajeMax}
+              onChangeText={(e) => handleChangeInput("umbralAmperajeMax", e)}        
+            />
+            <Text style={{ fontSize: 23, color: "#000", marginLeft:10, marginBottom: -5}}>
+              Umbral Potencia Mínimo
+            </Text>
+            <CustomInputText
+              value={electrodomestico?.umbralPotenciaMin}
+              onChangeText={(e) => handleChangeInput("umbralPotenciaMin", e)}        
+            />
+            <Text style={{ fontSize: 23, color: "#000", marginLeft:10, marginBottom: -5}}>
+            Umbral Potencia Maxima
+            </Text>
+            <CustomInputText
+              value={electrodomestico?.umbralPotenciaMax}
+              onChangeText={(e) => handleChangeInput("umbralPotenciaMax", e)}        
+            />
+            <CustomButton title="Actualizar información" onPress={() => editarElectrodometico()}/>
+          </View>
+        )}
         </LinearGradient>
 
       </LinearGradient>
-    </View>
+    </ScrollView>
   )
 }

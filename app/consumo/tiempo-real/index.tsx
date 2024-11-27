@@ -4,10 +4,14 @@ import { LineChart } from "react-native-chart-kit";
 import { Table, Row, Rows } from 'react-native-table-component';
 import { Ionicons } from "@expo/vector-icons";
 import { AuthContext } from "@/context/AuthContext";
+import { ElectrodomesticosContext } from "@/context/ElectrodomesticosContext";
 
 export default function ConsumoTiempoRealScreen() {
   const [data, setData] = useState([])
+  const [loading, setLoading] = useState(false);
   const {isAuthenticated} = useContext(AuthContext)
+  
+  const {electrodomesticos, obtenerElectrodomesticos} = useContext(ElectrodomesticosContext);
 
   const obtenerData = () => {
       setData((prevData) => {
@@ -34,7 +38,7 @@ export default function ConsumoTiempoRealScreen() {
       obtenerData()
     }, 2000);
 
-    return ()=> clearInterval(intervalId)
+    return () => clearInterval(intervalId)
   }, []);
   const state = {
     tableHead: ['ID', 'Nombre', 'Consumo W/h', 'Head4'],
@@ -89,6 +93,47 @@ export default function ConsumoTiempoRealScreen() {
             </>
           ) : (<ActivityIndicator size="large" style={{ height: 350, paddingVertical:20}}/>)
         }
+        {
+          data.length > 0 && electrodomesticos && electrodomesticos.map(electrodomestico => (
+            <>
+            <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                <Text style={{textAlign:"center", fontSize:25, fontWeight:"bold"}}>{electrodomestico.nombre}</Text>
+                <TouchableNativeFeedback>
+                  <Ionicons name="options" size={32} color="#22577a"/>
+                </TouchableNativeFeedback>
+              </View>
+            <LineChart data={{
+              labels: ["January", "February", "March", "April", "May", "June"],
+              datasets: [
+                {
+                  data: data
+                }
+              ] 
+              }}
+              width={Dimensions.get("window").width - 10}
+              height={300}
+              chartConfig={{
+                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                strokeWidth: 2, // optional, default 3
+                barPercentage: 0.5,
+                useShadowColorFromDataset: false,
+                backgroundGradientFrom:"#22577a",
+                backgroundGradientTo:"#38a3a5",
+                decimalPlaces: 0,
+                propsForBackgroundLines:{
+                  strokeWidth: 1
+                }// optional
+              }}
+              style= {{
+                borderRadius: 10,
+                paddingVertical:10,
+                alignSelf:"center",
+              }}
+              yAxisSuffix="W"
+            />
+            </>
+          ))
+        }
         <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
           <Row data={state.tableHead} style={styles.head} textStyle={styles.text}/>
           <Rows data={state.tableData} textStyle={styles.text}/>
@@ -96,6 +141,8 @@ export default function ConsumoTiempoRealScreen() {
       </View>
   )
 }
+
+
 
 const styles = StyleSheet.create({
   container: {padding: 16, paddingTop: 10, backgroundColor: '#fff' },

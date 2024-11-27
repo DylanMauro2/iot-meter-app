@@ -10,20 +10,23 @@ import { useContext, useEffect } from 'react';
 import { AuthContext } from '@/context/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import CustomLinkButton from '@/components/CustomLinkButton';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
   const {isAuthenticated, user} = useContext(AuthContext)
+  const insets = useSafeAreaInsets();
 
   return (
-    <View style={{width:Dimensions.get("window").width, alignSelf:"center", flex:1}}>
+    <View style={{flex:1}}>
       <LinearGradient
         colors={["#8BC34A", "#4CAF50", "#388E3C"]}
         style={{
-          flex:1
+          flex:1,
+          paddingTop: insets.top
         }}
       >
         <View style={{alignItems:"center", justifyContent:"center", marginVertical:30}}>
-          <Text style={{fontSize:50, fontWeight:"bold", paddingTop:100, color:"#FEFEFE"}}>Manargy</Text>
+          <Text style={{fontSize:50, fontWeight:"bold", color:"#FEFEFE"}}>Manargy</Text>
           <Text style={{fontSize:30, color:"#FEFEFE"}}>Bienvenido!</Text>
         </View>
         <View style={{flex:1}}>
