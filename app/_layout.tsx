@@ -59,16 +59,24 @@ export default function RootLayout() {
       <ElectrodomesticosProvider>
         <ThemeProvider value={theme}>
           <SafeAreaProvider style={{flex:1}}>
-            <StatusBar style="dark" backgroundColor="#8BC34A"/>
+            <StatusBar style="light" backgroundColor="#8BC34A"/>
           <ToastProvider>
             <Stack screenOptions={linking}>
               <Stack.Screen name="(tabs)" options={{ headerShown: false, headerTitle:"Menú" }}/>
               <Stack.Screen name="auth/login" options={{ headerShown: false}}/>
               <Stack.Screen name="auth/register" options={{ headerShown: false}}/>
-              <Stack.Screen name="consumo" options={{headerTitle:"Consumo"}}/>
-              <Stack.Screen name="gestion-dispositivos" options={{headerTitle:"Gestionar dispositivos"}}/>
-              <Stack.Screen name="agregar-dispositivos" options={{headerTitle:"Agregar dispositivo",presentation:"formSheet"}}/>
-              <Stack.Screen name="editar-dispositivos/[id]" options={{headerTitle:"Editar dispositivo",presentation:"formSheet"}}/>
+              <Stack.Screen name="consumo" options={{headerTitle:"Consumo", headerStyle: {
+                backgroundColor: "#8BC34A"
+              }}}/>
+              <Stack.Screen name="gestion-dispositivos" options={{headerTitle:"Gestionar dispositivos", headerStyle: {
+                backgroundColor: "#8BC34A"
+              }}}/>
+              <Stack.Screen name="agregar-dispositivos" options={{headerTitle:"Agregar dispositivo",presentation:"formSheet", headerStyle: {
+                backgroundColor: "#8BC34A"
+              }}}/>
+              <Stack.Screen name="editar-dispositivos/[id]" options={{headerTitle:"Editar dispositivo",presentation:"formSheet" ,headerStyle: {
+                backgroundColor: "#8BC34A"
+              }}}/>
               <Stack.Screen name="+not-found" />
             </Stack>
           </ToastProvider>

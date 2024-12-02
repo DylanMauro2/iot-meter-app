@@ -8,6 +8,7 @@ import { getElectrodomesticoByElectrodomesticoId, updateElectrodomestico, Update
 import { Electrodomestico } from '@/types'
 import { ElectrodomesticosContext } from '@/context/ElectrodomesticosContext'
 import { Toast } from 'react-native-toast-notifications'
+import { Ionicons } from '@expo/vector-icons'
 
 
 export default function EditarDispositivosScreen() {
@@ -46,7 +47,18 @@ export default function EditarDispositivosScreen() {
 
     const res = await updateElectrodomestico(payload);
 
-    Toast.show(res.message);
+    Toast.show(res.message, {
+      style: {
+        backgroundColor: "#fff",
+        zIndex:200
+      },
+      textStyle: {
+        fontSize: 15,
+        fontWeight: "600",
+        color: "green"
+      },
+      icon: <Ionicons name="checkmark-circle-outline" size={20} color="green"/>
+    });
 
     router.back();
 
@@ -79,7 +91,7 @@ export default function EditarDispositivosScreen() {
         }}
       >
         <LinearGradient
-            colors={["#008f39", "#8BC34A", "#558B2F"]}
+            colors={["#C5E1A5", "#558B2F"]}
             style={{
               backgroundColor: "#fee",
               height:"auto",
@@ -116,27 +128,6 @@ export default function EditarDispositivosScreen() {
               onChangeText={(e) => handleChangeInput("potenciaNominal", e)}          
             />
             <Text style={{ fontSize: 23, color: "#000", marginLeft:10, marginBottom: -5}}>
-              Descripción
-            </Text>
-            <CustomInputText
-              value={electrodomestico?.descripcion}
-              onChangeText={(e) => handleChangeInput("descripcion", e)}          
-            />
-            <Text style={{ fontSize: 23, color: "#000", marginLeft:10, marginBottom: -5}}>
-              Marca
-            </Text>
-            <CustomInputText
-              value={electrodomestico?.marca}
-              onChangeText={(e) => handleChangeInput("marca", e)}        
-            />
-            <Text style={{ fontSize: 23, color: "#000", marginLeft:10, marginBottom: -5}}>
-              Modelo
-            </Text>
-            <CustomInputText
-              value={electrodomestico?.modelo}
-              onChangeText={(e) => handleChangeInput("modelo", e)}        
-            />
-            <Text style={{ fontSize: 23, color: "#000", marginLeft:10, marginBottom: -5}}>
               Umbral Amperaje Mínimo
             </Text>
             <CustomInputText
@@ -163,6 +154,27 @@ export default function EditarDispositivosScreen() {
             <CustomInputText
               value={electrodomestico?.umbralPotenciaMax}
               onChangeText={(e) => handleChangeInput("umbralPotenciaMax", e)}        
+            />
+            <Text style={{ fontSize: 23, color: "#000", marginLeft:10, marginBottom: -5}}>
+              Marca
+            </Text>
+            <CustomInputText
+              value={electrodomestico?.marca}
+              onChangeText={(e) => handleChangeInput("marca", e)}        
+            />
+            <Text style={{ fontSize: 23, color: "#000", marginLeft:10, marginBottom: -5}}>
+              Modelo
+            </Text>
+            <CustomInputText
+              value={electrodomestico?.modelo}
+              onChangeText={(e) => handleChangeInput("modelo", e)}        
+            />
+            <Text style={{ fontSize: 23, color: "#000", marginLeft:10, marginBottom: -5}}>
+              Descripción
+            </Text>
+            <CustomInputText
+              value={electrodomestico?.descripcion}
+              onChangeText={(e) => handleChangeInput("descripcion", e)}          
             />
             <CustomButton title="Actualizar información" onPress={() => editarElectrodometico()}/>
           </View>

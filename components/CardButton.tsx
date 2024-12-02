@@ -1,7 +1,11 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { Dimensions, Text, TouchableOpacity } from "react-native";
+import { Dimensions, Text, TouchableOpacity, TouchableOpacityProps } from "react-native";
 
-export default function CardButton({title, ...restOfProps} : {title:string}) {
+interface Props extends TouchableOpacityProps {
+  title: string
+}
+
+export default function CardButton({title, ...restOfProps} : Props) {
   return (
     <TouchableOpacity
     {...restOfProps}

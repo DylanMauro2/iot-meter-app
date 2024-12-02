@@ -1,10 +1,7 @@
 import { Electrodomestico } from "@/types"
 
 export type SaveElectrodomesticoRequest = {
-  nombre: string,
-  usuarioId: number,
-  amperajeNominal: number,
-  potenciaNominal: number
+  electrodomestico: Electrodomestico
 }
 
 export type UpdateElectrodomesticoRequest = {
@@ -63,7 +60,7 @@ export const saveElectrodomestico = async (payload: SaveElectrodomesticoRequest)
     headers: {
       "Content-Type":"application/json"
     },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload.electrodomestico)
   })
   
   const electrodomesticosCreado = await res.json()

@@ -15,7 +15,7 @@ export default function CustomInputText({...restOfProps}) {
           borderColor: "#cecece",
           borderWidth: 2,
           borderStyle: "solid",
-          borderRadius: 30,
+          borderRadius: 20,
           paddingLeft: 17,
           fontSize: 22,
           width: widthScreenSize * 0.85,

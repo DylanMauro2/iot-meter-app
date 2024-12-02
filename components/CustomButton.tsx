@@ -23,7 +23,7 @@ export default function CustomButton({title, ...restOfProps} : {title:string}) {
         }}
       >
 
-        <Text style={{ fontSize: 22, fontWeight: "bold", color: "#fefefe" }}>
+        <Text style={{ fontSize: 22, fontWeight: "bold", color: "#fefefe", justifyContent:"center" }}>
           {title}
         </Text>
       </LinearGradient>

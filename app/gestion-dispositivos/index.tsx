@@ -11,6 +11,7 @@ import { ElectrodomesticosContext } from '@/context/ElectrodomesticosContext'
 import CardButton from '@/components/CardButton'
 import { Toast } from 'react-native-toast-notifications'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { Electrodomestico } from '@/types'
 
 export default function GestionDispositivosScreen() {
   const [loading, setLoading] = useState(true)
@@ -49,17 +50,28 @@ export default function GestionDispositivosScreen() {
   )
 }
 
-const Electrodomestico = ({ electrodomestico }) => {
+const ElectrodomesticoCard = ({ electrodomestico }: {electrodomestico: Electrodomestico}) => {
   const [showModal, setShowModal] = useState(false);
   const { obtenerElectrodomesticos } = useContext(ElectrodomesticosContext)
 
   const handleEliminarElectrodomestico = async (electrodomesticoId: number) => {
     const res = await deleteElectrodomesticoById(electrodomesticoId);
-    Toast.show(res.message)
+    Toast.show(res.message, {
+      style: {
+        backgroundColor: "#fff",
+        zIndex:200
+      },
+      textStyle: {
+        fontSize: 15,
+        fontWeight: "600",
+        color: "green"
+      },
+      icon: <Ionicons name="checkmark-circle-outline" size={20} color="green"/>
+    })
     await obtenerElectrodomesticos();
   }
 
-  const handleEditar = async (electrodomesticoId) => {
+  const handleEditar = async (electrodomesticoId: number | string) => {
     router.push({
       pathname: "/editar-dispositivos/[id]",
       params: { id: electrodomesticoId }
@@ -76,7 +88,7 @@ const Electrodomestico = ({ electrodomestico }) => {
           <View>
           <View style={{borderRadius:10, borderColor:"#000000", borderWidth:2, paddingHorizontal: 20, paddingVertical:10}}>
             <Text>
-              {electrodomestico.electrodomestico_id}
+              {electrodomestico.id}
             </Text>
           </View>
           </View>
@@ -95,34 +107,34 @@ const Electrodomestico = ({ electrodomestico }) => {
           <View style={{gap:10}}>
             <View style={{alignItems:"center", gap:3}}>
               <Text style={{color:"#333333", fontSize:17}}>Amperaje</Text>
-              <Text style={{fontWeight:"bold", fontSize:15}}>{electrodomestico.amperaje_nominal}</Text>
+              <Text style={{fontWeight:"bold", fontSize:15}}>{electrodomestico.amperajeNominal}</Text>
             </View>
             <View style={{alignItems:"center", gap:3}}>
               <Text style={{color:"#333333", fontSize:17}}>Potencia</Text>
-              <Text style={{fontWeight:"bold", fontSize:15}}>{electrodomestico.potencia_nominal}</Text>
+              <Text style={{fontWeight:"bold", fontSize:15}}>{electrodomestico.potenciaNominal}</Text>
             </View>
             <View style={{alignItems:"center", gap:3}}>
               <Text style={{color:"#333333", fontSize:17}}>Voltaje</Text>
-              <Text style={{fontWeight:"bold", fontSize:15}}>{electrodomestico.voltaje_nominal}</Text>
+              <Text style={{fontWeight:"bold", fontSize:15}}>{electrodomestico.voltajeNominal}</Text>
             </View>
           </View>
           <View style={{gap:10, alignItems:"center"}}>
               <View style={{alignItems:"center", gap:3}}>
                 <Text style={{color:"#333333", fontSize:17}}>Umbral de Voltaje</Text>
                 <Text style={{fontWeight:"bold", fontSize:15}}>
-                  {`${electrodomestico.umbral_voltaje_min} - ${electrodomestico.umbral_voltaje_max}`}
+                  {`${electrodomestico.umbralVoltajeMin} - ${electrodomestico.umbralVoltajeMax}`}
                 </Text>
               </View>
               <View style={{alignItems:"center", gap:3}}>
                 <Text style={{color:"#333333", fontSize:17}}>Umbral de Amperaje</Text>
                 <Text style={{fontWeight:"bold", fontSize:15}}>
-                {electrodomestico.umbral_amperaje_max && electrodomestico.umbral_amperaje_min  ? (`${electrodomestico.umbral_amperaje_min} - ${electrodomestico.umbral_amperaje_max}`): "Sin datos"}
+                {electrodomestico.umbralAmperajeMin && electrodomestico.umbralAmperajeMax  ? (`${electrodomestico.umbralAmperajeMin} - ${electrodomestico.umbralAmperajeMax}`): "Sin datos"}
                 </Text>
               </View>
               <View style={{alignItems:"center", gap:3}}>
                 <Text style={{color:"#333333", fontSize:17}}>Umbral de Potencia</Text>
                 <Text style={{fontWeight:"bold", fontSize:15}}>
-                  {electrodomestico.umbral_potencia_max && electrodomestico.umbral_potencia_min ? (`${electrodomestico.umbral_potencia_min} - ${electrodomestico.umbral_potencia_max}`): "Sin datos"}
+                  {electrodomestico.umbralPotenciaMax && electrodomestico.umbralPotenciaMin ? (`${electrodomestico.umbralPotenciaMin} - ${electrodomestico.umbralPotenciaMax}`): "Sin datos"}
                 </Text>
               </View>
           </View>
@@ -131,7 +143,7 @@ const Electrodomestico = ({ electrodomestico }) => {
           <CardButton 
             title="Editar"
             onPress={() => {
-              handleEditar(electrodomestico.electrodomestico_id)
+              handleEditar(Number(electrodomestico.id))
             }}
           /> 
         </View>
@@ -145,7 +157,7 @@ const Electrodomestico = ({ electrodomestico }) => {
             flex: 1,
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
           }}>
           <LinearGradient
             colors={["#C5E1A5", "#558B2F"]}
@@ -163,11 +175,11 @@ const Electrodomestico = ({ electrodomestico }) => {
               elevation: 5,
             }}
           >
-            <Text style={{color:"white", fontSize:20, fontWeight:"500"}}>¿Está seguro que desea borrar este dispositivo del monitoreo?</Text>
+            <Text style={{color:"white", fontSize:20, fontWeight:"500"}}>¿Está seguro que desea borrar este dispositivo?</Text>
             <View style={{flexDirection:"row", gap: 15}}>
             <CardButton
               title="Eliminar"
-              onPress={() => handleEliminarElectrodomestico(electrodomestico.electrodomestico_id)}
+              onPress={() => handleEliminarElectrodomestico(Number(electrodomestico.id))}
             />
             <CardButton
               title="Cancelar"
@@ -183,13 +195,12 @@ const Electrodomestico = ({ electrodomestico }) => {
 }
 
 const ElectrodomesticosList = ({electrodomesticos}) => {
-  const insets = useSafeAreaInsets();
   return (
-    <View style={{height: Dimensions.get("window").height - insets.bottom}}>
+    <View style={{flex: 0.8, paddingTop:10}}>
         <FlatList
         data={electrodomesticos}
-        keyExtractor={(electrodomestico) => electrodomestico.electrodomestico_id}
-        renderItem={({item}) => <Electrodomestico electrodomestico={item}/>}
+        keyExtractor={(electrodomestico) => electrodomestico.id}
+        renderItem={({item}) => <ElectrodomesticoCard electrodomestico={item}/>}
       />
     </View>
   )
